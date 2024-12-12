@@ -19,3 +19,15 @@ $mes = readline ("Em que mês você nasceu?");
 $ano = readline ("Em que ano você nasceu?");
 
 safadao($dia,$mes,$ano);
+
+//resultado do papai
+//Em que dia você nasceu?07
+//Em que mês você nasceu?03
+//Em que ano você nasceu?1981
+//Você 59.17% perfeito, mas aquele 40.83% é não anjo
+    
+    //resultado da mamae
+   // Em que dia você nasceu?08
+//Em que mês você nasceu?08
+//Em que ano você nasceu?1979
+//Você 30.82% perfeito, mas aquele 69.18% é não anjo
