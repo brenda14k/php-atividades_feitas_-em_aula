@@ -1,0 +1,21 @@
+<?php
+function safadao (int $dia, int $mes,int $ano ){
+    $ano = $ano % 100;
+    $safadeza= somatorio ($mes) + ($ano/100)*(50-$dia);
+    $anjo = 100-$safadeza;
+    print("Você {$anjo}% perfeito, mas aquele {$safadeza}% é não anjo");
+    
+}
+function somatorio(int $mes){
+    
+    $somatorio = 0;
+    for ($i= $mes; $i> 0; $i--){
+        $somatorio += $i;
+    }
+    return  $somatorio;
+}
+$dia = readline ("Em que dia você nasceu?");
+$mes = readline ("Em que mês você nasceu?");
+$ano = readline ("Em que ano você nasceu?");
+
+safadao($dia,$mes,$ano);
