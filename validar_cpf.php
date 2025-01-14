@@ -9,6 +9,12 @@ $soma = 0;
 for ($i= 0; $i <9 ; $i++) { 
 $soma += $cpf[$i]*(10-$i);
 }
-print $soma%11;
+$valor = (int) ( $soma/11);
+$resto = $soma%11;
+
+if ($resto < 2) {
+    $digito1= 0;
+}
+print"Valor:$valor resto:$resto \n";
 return true;
 }
