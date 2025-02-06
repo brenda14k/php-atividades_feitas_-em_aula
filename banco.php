@@ -1,16 +1,15 @@
 <?php
-// conferir se o cpf aceita o numero de digitos certos e o numero de telefone tambem
-// se repetir o numero do Cpf na hora do cadastro nao pode continuar o cadastro
+// não deixar sacar numero negativo
 $clientes = [];
 $contas = [];
 
 // Função principal que exibe o menu de boas-vindas
 function menu_principal() {
-    print("Bem-vindo ao Banco Branco!\n");
-    print("Escolha uma opção:\n");
-    print("1 - Acessar conta\n");
-    print("2 - Cadastrar-se\n");
-    print("3 - Sair\n");
+    print(" Bem-vindo ao MB!\n");
+    print("  Escolha uma opção:\n");
+    print(" 1 - Acessar conta\n");
+    print(" 2 - Cadastrar-se\n");
+    print(" 3 - Sair\n");
 
     $opcao = (int) readline("Escolha uma opção: ");
 
@@ -22,10 +21,10 @@ function menu_principal() {
             cadastrar_cliente();
             break;
         case 3:
-            print("Obrigado por utilizar o Banco Branco. Até logo!\n");
+            print(" \n Obrigado por utilizar o MB. Até logo!\n");
             break;
         default:
-            print("Opção inválida! Tente novamente.\n");
+            print(" \n Opção inválida! Tente novamente.\n");
             menu_principal();
             break;
     }
@@ -33,8 +32,16 @@ function menu_principal() {
 
 // Função para acessar uma conta existente
 function acessar_conta() {
+    
     global $clientes;
+    
     $cpf = readline("Digite seu CPF: ");
+    
+    if (!CPF_Valido($cpf)) {
+        print(" \n CPF inválido! Tente novamente.\n");
+        menu_principal();
+        return;
+    }
 
     // Verifica se o CPF existe no array de clientes
     foreach ($clientes as $cliente) {
@@ -42,27 +49,36 @@ function acessar_conta() {
             // Encontrou o cliente, agora vamos procurar o número da conta
             $numero_conta = obterNumeroConta($cpf);
             if ($numero_conta) {
-                // Passa as informações do cliente para o menu_cliente
+                
                 menu_cliente($cliente['nome'], $cliente['cpf'], $cliente['telefone'], $numero_conta);
-                return;  // Após chamar o menu_cliente, o código deve parar aqui
+                return;  
             }
         }
     }
-
-    print("CPF não encontrado. Você precisa se cadastrar.\n");
-    menu_principal();  
+    
+    print("\n CPF não encontrado. Tente novamente.\n");
+    menu_principal();
+    
 }
 
 // Cadastra novo cliente
 function cadastrar_cliente() {
+    
+    global $clientes;
+
     $nome = readline("Digite seu nome: ");
     $cpf = readline("Digite seu CPF: ");
     
+    if (!CPF_Valido($cpf)) {
+        print(" \n CPF inválido! Tente novamente.\n");
+        menu_principal();
+        return;
+    }
+    
     // Verificar se o CPF já está cadastrado
-    global $clientes;
     foreach ($clientes as $cliente) {
         if ($cliente['cpf'] == $cpf) {
-            print("CPF já existente. Confira os dígitos.\n");
+            print(" \n CPF já existente. Confira os dígitos.\n");
             menu_principal();
             return;
         }
@@ -88,7 +104,7 @@ function forma_cadastro($nome, $cpf, $telefone) {
     $numero_conta = cadastrarConta($cpf);
 
     print(" \n Uma conta foi criada para você.\n");
-    print(" Número da conta: $numero_conta\n");
+    print("\n Número da conta: $numero_conta\n");
 
     // Após cadastrar, o menu_cliente é chamado para o primeiro acesso
     menu_cliente($nome, $cpf, $telefone, $numero_conta);
@@ -126,7 +142,7 @@ function menu_cliente($nome_cliente, $cpf_cliente, $telefone_cliente, $numero_co
     foreach ($contas as &$conta) {
         if ($conta['cpfCliente'] == $cpf_cliente) {
             if ($conta['primeiro_acesso']) {
-                print("Seu primeiro acesso,por favor,faça um depósito inicial: ");
+                print("\n Esse é seu primeiro acesso, faça um depósito inicial:  ");
                 $quantia = (float) readline();
                 depositar($conta, $numero_conta, $quantia);
                 $conta['primeiro_acesso'] = false; // Marca como não primeiro acesso
@@ -137,6 +153,7 @@ function menu_cliente($nome_cliente, $cpf_cliente, $telefone_cliente, $numero_co
 
     // Exibe o menu de operações sem a saudação
     while (true) {
+        print("Bem-vindo, $nome_cliente!\n");
         print("Escolha uma opção:\n");
         print("1 - Depositar\n");
         print("2 - Sacar\n");
@@ -157,7 +174,7 @@ function menu_cliente($nome_cliente, $cpf_cliente, $telefone_cliente, $numero_co
                 consultarSaldo($conta, $numero_conta); // Agora irá apenas consultar o saldo se a conta for válida
                 break;
             case 4:
-                print("Obrigado por utilizar o Banco Branco. Até logo!\n");
+                print("Obrigado por utilizar o MB. Até logo!\n");
                 return; // Retorna ao menu principal
             default:
                 print("Opção inválida! Tente novamente.\n");
@@ -193,5 +210,47 @@ function consultarSaldo($conta, $numeroConta) {
     }
 }
 
+function CPF_Valido($cpf = null): bool {
+    
+    if (strlen($cpf) != 11) {
+        return false;
+    }
+    
+    $soma = 0;
+    for ($i = 0; $i < 9; $i++) {
+        $soma += $cpf[$i] * (10 - $i);
+    }
+    $valor = (int)($soma / 11);
+    $resto = $soma % 11;
+
+    if ($resto < 2) {
+        $digito1 = 0;
+    } else {
+        $digito1 = 11 - $resto;
+    }
+
+    if ($digito1 != $cpf[9]) {
+        return false;
+    }
+
+    $soma = 0;
+    for ($i = 0; $i < 10; $i++) {
+        $soma += $cpf[$i] * (11 - $i);
+    }
+    $resto = $soma % 11;
+
+    if ($resto < 2) {
+        $digito2 = 0;
+    } else {
+        $digito2 = 11 - $resto;
+    }
+
+    if ($digito2 != $cpf[10]) {
+        return false;
+    }
+
+    return true;
+    
+}
+
 menu_principal(); // Chama a função principal para iniciar o processo
-?>
