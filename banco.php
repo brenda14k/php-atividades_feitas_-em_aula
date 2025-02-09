@@ -163,15 +163,24 @@ function menu_cliente($nome_cliente, $cpf_cliente, $telefone_cliente, $numero_co
         $opcao = (int) readline("Escolha uma opção: ");
         switch ($opcao) {
             case 1:
-                $quantia = (float) readline("Informe a quantia a ser depositada: ");
-                depositar($conta, $numero_conta, $quantia);
+                while (true) {
+                    print("Informe a quantia a ser depositada: ");
+                    $quantia = (float) readline();
+            
+                    if (validarQuantia($quantia)) {
+                        depositar($conta, $numero_conta, $quantia);
+                        break;
+                    } else {
+                        print("Valor inválido. Digite um número positivo.\n");
+                    }
+                }
                 break;
             case 2:
                 $quantia_saque = (float) readline("Informe o valor a ser sacado: ");
                 sacar($conta, $numero_conta, $quantia_saque);
                 break;
             case 3:
-                consultarSaldo($conta, $numero_conta); //  consulta o saldo se a conta for válida
+                consultarSaldo($conta, $numero_conta); // consulta o saldo se a conta for válida
                 break;
             case 4:
                 print("Obrigado por utilizar o MB. Até logo!\n");
@@ -182,19 +191,20 @@ function menu_cliente($nome_cliente, $cpf_cliente, $telefone_cliente, $numero_co
         }
     }
 }
+
 function depositar(&$conta, $numeroConta, $quantia) {
     
     if ($quantia <= 0) {
         print("Não é permitido realizar depósitos com valores negativos ou zero.\n");
         return;
+    }
 
     if ($conta['numeroConta'] == $numeroConta) {
-        $conta['saldo'] += $quantia; 
-        print("Depósito de R$ $quantia realizado com sucesso na conta $numeroConta.\n");
+        $conta['saldo'] += <span class="math-inline">quantia; 
+print\("Depósito de R</span> $quantia realizado com sucesso na conta $numeroConta.\n");
     } else {
         print("Número da conta não encontrado.\n");
     }
-}
 }
 
 function sacar(&$conta, $numeroConta, $quantia_saque) {
@@ -202,17 +212,17 @@ function sacar(&$conta, $numeroConta, $quantia_saque) {
         if ($quantia_saque < 0) {
             print("Não é permitido realizar saques com valores negativos.\n");
         } elseif ($conta['saldo'] >= $quantia_saque) {
-            $conta['saldo'] -= $quantia_saque;
-            print("Saque de R$ $quantia_saque realizado com sucesso na conta $numeroConta.\n");
-        } else {
-            print("Saldo insuficiente para realizar o saque de R$ $quantia_saque.\n");
+            $conta['saldo'] -= <span class="math-inline">quantia\_saque;
+print\("Saque de R</span> $quantia_saque realizado com sucesso na conta <span class="math-inline">numeroConta\.\\n"\);
+\} else \{
+print\("Saldo insuficiente para realizar o saque de R</span> $quantia_saque.\n");
         }
     }
 }
 
 function consultarSaldo($conta, $numeroConta) {
     if ($conta['numeroConta'] == $numeroConta) {
-        print("O saldo da conta $numeroConta é de R$ {$conta['saldo']}.\n");
+        print("O saldo da conta <span class="math-inline">numeroConta é de R</span> {$conta['saldo']}.\n");
     }
 }
 
@@ -241,22 +251,4 @@ function CPF_Valido($cpf = null): bool {
 
     $soma = 0;
     for ($i = 0; $i < 10; $i++) {
-        $soma += $cpf[$i] * (11 - $i);
-    }
-    $resto = $soma % 11;
-
-    if ($resto < 2) {
-        $digito2 = 0;
-    } else {
-        $digito2 = 11 - $resto;
-    }
-
-    if ($digito2 != $cpf[10]) {
-        return false;
-    }
-
-    return true;
-    
-}
-
-menu_principal(); // Chama a função principal para iniciar o processo
+        $soma += $cpf[$i] *
