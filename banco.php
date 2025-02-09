@@ -1,9 +1,9 @@
 <?php
-// não deixar sacar numero negativo
+// não deixar depositar numero negativo
 $clientes = [];
 $contas = [];
 
-// Função principal que exibe o menu de boas-vindas
+
 function menu_principal() {
     print(" Bem-vindo ao MB!\n");
     print("  Escolha uma opção:\n");
@@ -30,7 +30,7 @@ function menu_principal() {
     }
 }
 
-// Função para acessar uma conta existente
+
 function acessar_conta() {
     
     global $clientes;
@@ -86,11 +86,11 @@ function cadastrar_cliente() {
 
     $telefone = readline("Digite seu telefone: ");
 
-    // Chama a função forma_cadastro após cadastrar o cliente
+    
     forma_cadastro($nome, $cpf, $telefone);
 }
 
-// Função para cadastrar o cliente no array
+// cadastra o cliente no array
 function forma_cadastro($nome, $cpf, $telefone) {
     global $clientes;
     $cliente = [
@@ -106,7 +106,7 @@ function forma_cadastro($nome, $cpf, $telefone) {
     print(" \n Uma conta foi criada para você.\n");
     print("\n Número da conta: $numero_conta\n");
 
-    // Após cadastrar, o menu_cliente é chamado para o primeiro acesso
+    // primeiro acesso
     menu_cliente($nome, $cpf, $telefone, $numero_conta);
 }
 
@@ -134,7 +134,7 @@ function obterNumeroConta($cpf_cliente) {
     return null;
 }
 
-// Função para o menu do cliente cadastrado (Agora inclui primeiro acesso)
+// Função para o menu do cliente cadastrado 
 function menu_cliente($nome_cliente, $cpf_cliente, $telefone_cliente, $numero_conta) {
     global $contas;
 
@@ -145,13 +145,13 @@ function menu_cliente($nome_cliente, $cpf_cliente, $telefone_cliente, $numero_co
                 print("\n Esse é seu primeiro acesso, faça um depósito inicial:  ");
                 $quantia = (float) readline();
                 depositar($conta, $numero_conta, $quantia);
-                $conta['primeiro_acesso'] = false; // Marca como não primeiro acesso
+                $conta['primeiro_acesso'] = false; 
             }
-            break; // Saímos do loop após encontrar a conta correspondente
+            break; 
         }
     }
 
-    // Exibe o menu de operações sem a saudação
+    // Exibe o menu de operações 
     while (true) {
         print("Bem-vindo, $nome_cliente!\n");
         print("Escolha uma opção:\n");
@@ -171,30 +171,37 @@ function menu_cliente($nome_cliente, $cpf_cliente, $telefone_cliente, $numero_co
                 sacar($conta, $numero_conta, $quantia_saque);
                 break;
             case 3:
-                consultarSaldo($conta, $numero_conta); // Agora irá apenas consultar o saldo se a conta for válida
+                consultarSaldo($conta, $numero_conta); //  consulta o saldo se a conta for válida
                 break;
             case 4:
                 print("Obrigado por utilizar o MB. Até logo!\n");
-                return; // Retorna ao menu principal
+                return;
             default:
                 print("Opção inválida! Tente novamente.\n");
                 break;
         }
     }
 }
-
-// Função para fazer o depósito
 function depositar(&$conta, $numeroConta, $quantia) {
+    
+    if ($quantia <= 0) {
+        print("Não é permitido realizar depósitos com valores negativos ou zero.\n");
+        return;
+
     if ($conta['numeroConta'] == $numeroConta) {
-        $conta['saldo'] += $quantia;
+        $conta['saldo'] += $quantia; 
         print("Depósito de R$ $quantia realizado com sucesso na conta $numeroConta.\n");
+    } else {
+        print("Número da conta não encontrado.\n");
     }
 }
+}
 
-// Função para sacar dinheiro
 function sacar(&$conta, $numeroConta, $quantia_saque) {
     if ($conta['numeroConta'] == $numeroConta) {
-        if ($conta['saldo'] >= $quantia_saque) {
+        if ($quantia_saque < 0) {
+            print("Não é permitido realizar saques com valores negativos.\n");
+        } elseif ($conta['saldo'] >= $quantia_saque) {
             $conta['saldo'] -= $quantia_saque;
             print("Saque de R$ $quantia_saque realizado com sucesso na conta $numeroConta.\n");
         } else {
@@ -203,7 +210,6 @@ function sacar(&$conta, $numeroConta, $quantia_saque) {
     }
 }
 
-// Função para consultar o saldo
 function consultarSaldo($conta, $numeroConta) {
     if ($conta['numeroConta'] == $numeroConta) {
         print("O saldo da conta $numeroConta é de R$ {$conta['saldo']}.\n");
