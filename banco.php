@@ -1,9 +1,10 @@
 <?php
-// quando a pessoa cadastra nao ta puxando que ela se cadastrou quando ela tenta consultar o CPF.
+// problema na linha 73 e quando acessa a conta de nova nao aparece o nome do cliente
 $clientes = [];
 $contas = [];
 
 function menu_principal() {
+    print ("\n");
     print("Bem-vindo ao MB!\n");
     print("Escolha uma opção:\n");
     print("1 - Acessar conta\n");
@@ -31,6 +32,7 @@ function menu_principal() {
 
 function acessar_conta() {
     global $clientes;
+    global $contas;
     
     $cpf = readline("Digite seu CPF: ");
     
@@ -43,10 +45,10 @@ function acessar_conta() {
     // Verifica se o CPF existe no array de clientes
     $cliente_encontrado = false;
     $cliente = null; // Variável para armazenar o cliente encontrado
-    foreach ($clientes as $c) {
-        if ($c['cpf'] == $cpf) {
+    foreach ($clientes as $cliente_array) {
+        if ($cliente_array['cpf'] == $cpf) {
             $cliente_encontrado = true;
-            $cliente = $c;
+            $cliente = $cliente_array; // Atribui o cliente encontrado
             break;
         }
     }
@@ -60,7 +62,7 @@ function acessar_conta() {
     // Se o cliente foi encontrado, obtém o número da conta
     $numero_conta = obterNumeroConta($cpf);
     if ($numero_conta) {
-        // Se a conta foi encontrada, vai para o menu do cliente
+        // Exibe o nome corretamente
         menu_cliente($cliente['nome'], $cliente['cpf'], $cliente['telefone'], $numero_conta);
     } else {
         print("\nErro ao acessar a conta. Tente novamente.\n");
@@ -104,7 +106,6 @@ function forma_cadastro($nome, $cpf, $telefone) {
     ];
     $clientes[] = $cliente;
 
-    // Criação de conta bancária para o cliente
     $numero_conta = cadastrarConta($cpf);
 
     print("\nUma conta foi criada para você.\n");
@@ -142,7 +143,6 @@ function obterNumeroConta($cpf_cliente) {
 function menu_cliente($nome_cliente, $cpf_cliente, $telefone_cliente, $numero_conta) {
     global $contas;
 
-    // Verifica se é o primeiro acesso, se for, solicita o depósito inicial
     foreach ($contas as &$conta) {
         if ($conta['cpfCliente'] == $cpf_cliente) {
             if ($conta['primeiro_acesso']) {
@@ -162,9 +162,10 @@ function menu_cliente($nome_cliente, $cpf_cliente, $telefone_cliente, $numero_co
         print("1 - Depositar\n");
         print("2 - Sacar\n");
         print("3 - Consultar saldo\n");
-        print("4 - Sair\n");
+        print("4 - Voltar para o menu\n");
+        print("5 - Sair\n");
 
-        $opcao = (int) readline("Escolha uma opção: ");
+        $opcao = (int) readline("\n Escolha uma opção: ");
         switch ($opcao) {
             case 1:
                 $quantia = (float) readline("Informe a quantia a ser depositada: ");
@@ -175,9 +176,12 @@ function menu_cliente($nome_cliente, $cpf_cliente, $telefone_cliente, $numero_co
                 sacar($conta, $numero_conta, $quantia_saque);
                 break;
             case 3:
-                consultarSaldo($conta, $numero_conta); // consulta o saldo se a conta for válida
+                consultarSaldo($conta, $numero_conta); 
                 break;
-            case 4:
+            case 4 :
+                menu_principal();
+                print ("\n");
+            case 5:
                 print("Obrigado por utilizar o MB. Até logo!\n");
                 return;
             default:
@@ -188,13 +192,11 @@ function menu_cliente($nome_cliente, $cpf_cliente, $telefone_cliente, $numero_co
 }
 
 function depositar(&$conta, $numeroConta, $quantia) {
-    // Verifica se a quantia é um número válido e se não é menor ou igual a zero
     if (!is_numeric($quantia) || $quantia <= 0) {
         print("Não é permitido realizar depósitos com valores negativos ou zero.\n");
-        return; // Interrompe o processo se for um valor inválido
+        return; 
     }
 
-    // Verifica se a conta corresponde ao número de conta fornecido
     if ($conta['numeroConta'] == $numeroConta) {
         $conta['saldo'] += $quantia; 
         print("Depósito de R$ $quantia realizado com sucesso na conta $numeroConta.\n");
@@ -263,4 +265,4 @@ function CPF_Valido($cpf = null): bool {
     return true;
 }
 
-menu_principal(); 
+menu_principal();
