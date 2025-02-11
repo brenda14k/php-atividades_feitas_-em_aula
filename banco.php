@@ -1,5 +1,4 @@
 <?php
-// problema na linha 73 e quando acessa a conta de nova nao aparece o nome do cliente
 $clientes = [];
 $contas = [];
 
@@ -44,7 +43,7 @@ function acessar_conta() {
 
     // Verifica se o CPF existe no array de clientes
     $cliente_encontrado = false;
-    $cliente = null; // Variável para armazenar o cliente encontrado
+    $cliente = null;
     foreach ($clientes as $cliente_array) {
         if ($cliente_array['cpf'] == $cpf) {
             $cliente_encontrado = true;
