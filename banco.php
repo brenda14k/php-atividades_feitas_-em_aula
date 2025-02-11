@@ -10,7 +10,7 @@ function menu_principal() {
     print("2 - Cadastrar-se\n");
     print("3 - Sair\n");
 
-    $opcao = (int) readline("Escolha uma opção: ");
+    $opcao = (int) readline("\nEscolha uma opção: \n");
 
     switch ($opcao) {
         case 1:
